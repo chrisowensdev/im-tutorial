@@ -2,7 +2,7 @@ import React from 'react';
 
 class Signup extends React.Component {
     render() {
-        return <div>Hello World from Signup</div>;
+        return <div>This is the signup page</div>;
     }
 }
 
