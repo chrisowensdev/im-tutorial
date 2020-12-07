@@ -14,8 +14,15 @@ const firebase = require('firebase');
 
 class Signup extends React.Component {
     render() {
-        return <div>This is the signup page</div>;
+        const { classes } = this.props;
+
+        return (
+            <main className={classes.main}>
+                <CssBaseline></CssBaseline>
+                <Paper className={classes.paper}></Paper>
+            </main>
+        );
     }
 }
 
-export default Signup;
+export default withStyles(styles)(Signup);
