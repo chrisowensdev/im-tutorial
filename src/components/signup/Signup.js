@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
     FormControl,
     InputLabel,
@@ -13,6 +14,16 @@ import styles from './styles';
 const firebase = require('firebase');
 
 class Signup extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            email: null,
+            password: null,
+            passwordConfirmation: null,
+            signupError: '',
+        };
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -38,18 +49,87 @@ class Signup extends React.Component {
                                 id='signup-email-input'
                             ></Input>
                         </FormControl>
+                        <FormControl required fullWidth margin='normal'>
+                            <InputLabel htmlFor='signup-password-input'>
+                                Create A Password
+                            </InputLabel>
+                            <Input
+                                type='password'
+                                id='signup-password-input'
+                                onChange={(e) => this.userTyping('password', e)}
+                            ></Input>
+                        </FormControl>
+                        <FormControl required fullWidth margin='normal'>
+                            <InputLabel htmlFor='signup-password-confirmation-input'>
+                                Confirm Your Password
+                            </InputLabel>
+                            <Input
+                                type='password'
+                                id='signup-password-confirmation-input'
+                                onChange={(e) =>
+                                    this.userTyping('passwordConfirmation', e)
+                                }
+                            ></Input>
+                        </FormControl>
+                        <Button
+                            type='submit'
+                            fullWidth
+                            variant='contained'
+                            color='primary'
+                            className={classes.submit}
+                        >
+                            Submit
+                        </Button>
                     </form>
+                    {this.state.signupError ? (
+                        <Typography
+                            className={classes.errorText}
+                            component='h5'
+                            variante='h6'
+                        >
+                            {this.state.signupError}
+                        </Typography>
+                    ) : null}
+                    <Typography
+                        component='h5'
+                        variant='h6'
+                        className={classes.hasAccountHeader}
+                    >
+                        Already Have an Account?
+                    </Typography>
+                    <Link className={classes.logInLink} to='/login'>
+                        Log In
+                    </Link>
                 </Paper>
             </main>
         );
     }
 
     userTyping = (type, e) => {
-        console.log(type, e);
+        switch (type) {
+            case 'email':
+                this.setState({
+                    email: e.target.value,
+                });
+                break;
+            case 'password':
+                this.setState({
+                    password: e.target.value,
+                });
+                break;
+            case 'passwordConfirmation':
+                this.setState({
+                    passwordConfirmation: e.target.value,
+                });
+                break;
+            default:
+                break;
+        }
     };
 
     submitSignup = (e) => {
-        console.log('Submitting');
+        e.preventDefault();
+        console.log('Submitting', this.state);
     };
 }
 
