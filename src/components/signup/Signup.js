@@ -11,7 +11,7 @@ import {
     Button,
 } from '@material-ui/core';
 import styles from './styles';
-const firebase = require('firebase');
+import firebase from 'firebase';
 
 class Signup extends React.Component {
     constructor() {
@@ -105,6 +105,8 @@ class Signup extends React.Component {
         );
     }
 
+    formIsValid = () => this.state.password === this.state.passwordConfirmation;
+
     userTyping = (type, e) => {
         switch (type) {
             case 'email':
@@ -129,7 +131,46 @@ class Signup extends React.Component {
 
     submitSignup = (e) => {
         e.preventDefault();
-        console.log('Submitting', this.state);
+        if (!this.formIsValid()) {
+            this.setState({
+                signupError: 'Passwords do not match',
+            });
+            return;
+        }
+
+        firebase
+            .auth()
+            .createUserWithEmailAndPassword(
+                this.state.email,
+                this.state.password
+            )
+            .then(
+                (authRes) => {
+                    const userObj = {
+                        email: authRes.user.email,
+                    };
+                    firebase
+                        .firestore()
+                        .collection('users')
+                        .doc(this.state.email)
+                        .set(userObj)
+                        .then(
+                            () => {
+                                this.props.history.push('/dashboard');
+                            },
+                            (dbError) => {
+                                console.log(dbError);
+                                this.setState({
+                                    signupError: 'Failed to add user ',
+                                });
+                            }
+                        );
+                },
+                (authError) => {
+                    console.log(authError);
+                    this.setState({ signupError: 'Failed to add user ' });
+                }
+            );
     };
 }
 
